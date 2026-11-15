@@ -1,0 +1,12 @@
+{
+  "name": "quant-team",
+  "version": "0.1.0",
+  "description": "两层量化研究团队：分配组调度生成与检查，更新层管理状态和指令",
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "commands": "./commands/",
+  "interface": {
+    "displayName": "Quant Team",
+    "shortDescription": "简单、可审计的量化研究协作框架"
+  }
+}
