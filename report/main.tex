@@ -1,0 +1,134 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[margin=18mm,footskip=9mm]{geometry}
+\usepackage{iftex}
+\usepackage{fontspec}
+\setmainfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+\newif\ifChineseMemo
+\ChineseMemotrue
+\usepackage[UTF8,fontset=fandol]{ctex}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{booktabs,graphicx,xcolor,caption,xurl,fancyhdr}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{dateplot}
+\definecolor{MemoBlue}{HTML}{203E70}
+\definecolor{MemoRule}{HTML}{B9C8DF}
+\usepackage[colorlinks=true,linkcolor=MemoBlue,urlcolor=MemoBlue]{hyperref}
+\captionsetup{font=small,labelfont=bf,skip=4pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.3pt}
+\newcommand{\ReportTitle}{20日反转因子：样本外检验未通过}
+\newcommand{\ReportType}{因子研究报告}
+\newcommand{\ReportDate}{2026年11月15日}
+\newcommand{\DataDate}{2026-11-13}
+\newcommand{\ReportScope}{2023-11-16—2026-11-13；月度调仓；人民币计价}
+\newcommand{\TeamName}{量化研究团队}
+\newcommand{\DeskName}{期末项目 · 横截面因子}
+\newcommand{\ReportAuthor}{生成组、检查组、分配组}
+\newcommand{\Coverage}{34只创业板股票；35个可检验月份}
+\newcommand{\KeyFinding}{样本内选出的20日反转因子在最后12个月失去预测能力，多空策略年化收益为-29.20\%，不应据此进入实盘。}
+\fancyfoot[L]{\scriptsize\TeamName}
+\fancyfoot[R]{\scriptsize\ReportType\quad\thepage}
+
+\begin{document}
+\begin{minipage}[t]{0.70\textwidth}
+\vspace{0pt}
+{\small\ReportDate}\par\medskip
+{\color{MemoBlue}\hrule height 0.5pt}\smallskip
+{\large\ReportType}\par
+{\LARGE\bfseries\ReportTitle}\par\medskip
+\ReportScope
+\end{minipage}\hfill
+\begin{minipage}[t]{0.23\textwidth}
+\vspace{0pt}\raggedleft
+\colorbox{MemoBlue}{\parbox[c][19mm][c]{0.86\linewidth}{\centering\color{white}\bfseries\TeamName}}\par\medskip
+\DeskName
+\end{minipage}
+\par\bigskip
+{\color{MemoBlue}\hrule height 0.5pt}\medskip
+{\large\KeyFinding}\par\bigskip
+
+\begin{minipage}[t]{0.61\textwidth}
+\vspace{0pt}\raggedright
+\setlength{\parskip}{4pt}
+\textbf{研究问题}\par
+在现有34只股票中，月末计算的因子能否预测下个月横截面收益？生成组仅比较动量、反转和低波动三个候选，分配组按前23个月的月均Rank IC选择因子，检查组再核验最后12个月。
+
+\textbf{主要发现}\par
+20日反转以样本内月均Rank IC 0.0149入选，但ICIR仅0.0640，信号很弱。样本外Rank IC降至-0.0048，方向反转；多空组合12个月累计及年化收益均为-29.20\%，最大回撤-49.77\%。同期等权基准收益为-1.80\%。
+
+\textbf{解释}\par
+反转因子偏好过去20日跌幅较大的股票。样本外Q5年化收益5.97\%，低于Q1的16.35\%，未形成预期的高因子值占优。样本内正Rank IC没有转化为可接受的收益或样本外稳定性，因此结论是“研究完成但未通过”，而不是“发现可交易alpha”。
+
+\textbf{风险与限制}\par
+数据仅覆盖34只创业板股票，并非完整沪深300；使用当前成分名单，存在幸存者偏差。收盘价复权口径未确认，未计分红、手续费、滑点、涨跌停和做空约束。12个月样本外期很短，结果不构成投资建议。
+\end{minipage}\hfill
+\begin{minipage}[t]{0.36\textwidth}
+\vspace{0pt}\small
+\input{sections/tables.tex}
+\medskip
+\input{sections/figures.tex}
+\end{minipage}
+\par\vfill
+
+{\color{MemoRule}\hrule height 0.4pt}\medskip
+\begin{minipage}[t]{0.36\textwidth}
+\vspace{0pt}\small
+\textbf{团队分工}\par\ReportAuthor\par\TeamName\par
+\medskip\textbf{覆盖范围}\par\Coverage
+\end{minipage}\hfill
+\begin{minipage}[t]{0.60\textwidth}
+\vspace{0pt}\footnotesize
+\textbf{来源与日期。} 项目本地数据，由Kimi Datasource下载；\texttt{Data/CSI300\_daily/raw/}，12个CSV、24,634行，截至\DataDate。
+
+\textbf{检查。} 日期错位、每月至少10只股票、样本外隔离、收益复算及有限数值检查均通过；不代表经济有效性通过。
+
+\textbf{制备。} Python标准库计算；生成组研究、检查组复核、分配组汇总结论；AI辅助编程与报告排版。
+\end{minipage}
+
+\newpage
+{\color{MemoBlue}\hrule height 0.5pt}\medskip
+{\Large\bfseries 研究设计、候选比较与复现}\par\medskip
+
+\textbf{因子定义}\par
+20日反转因子为
+\[
+F_{i,t}=-\left(\frac{P_{i,t}}{P_{i,t-20}}-1\right),
+\]
+其中$P$为所给收盘价，$t$为月末，$t-20$为该股票此前第20个交易观测日。因子值越高，过去20日跌幅越大。每月末排序并分为五组，Q1最低、Q5最高；次月收益为下一个月末收盘价相对当月末收盘价的涨跌幅。停牌导致端点缺价时不进入当月检验。
+
+\textbf{候选选择}\par
+候选只根据样本内结果选择，最后12个月不参与选型。Rank IC是因子排名与次月收益排名的Spearman相关系数；ICIR为月均Rank IC除以月度Rank IC样本标准差，未年化。
+
+\begin{center}
+\captionof{table}{三个候选因子的样本内比较}\label{tab:candidates}
+\input{../output/tables/candidate_metrics.tex}
+\end{center}
+
+\textbf{样本外五分位表现}\par
+各组按月等权并分别复利；多空组合则每月使用Q5收益减Q1收益后再复利，因此多空累计收益不等于Q5与Q1年化收益的简单差值。
+\begin{center}
+\captionof{figure}{样本外五分位组合年化收益}\label{fig:quintiles}
+\begin{minipage}{0.72\textwidth}
+\input{../output/figures/quintile_returns.tex}
+\end{minipage}
+\end{center}
+{\footnotesize 注：Q1至Q5年化收益依次为16.35\%、-27.16\%、-15.53\%、3.06\%、5.97\%，分组不单调。\par}
+
+\textbf{风险指标定义}\par
+年化收益按月度复利并以12个月年化；年化波动为月收益样本标准差乘$\sqrt{12}$；Sharpe使用零无风险利率；最大回撤基于月度多空净值。未扣成本，且A股实际做空受限，多空结果仅用于因子评价。
+
+\textbf{复核与复现}\par
+检查组确认所有35个月的收益日期晚于因子日期，每月均有34只有效股票；训练23个月、测试12个月互不重叠。月度结果见\texttt{output/monthly\_returns.csv}，完整数值及五项检查见\texttt{output/factor\_results.json}。在项目根目录运行\texttt{python src/factor\_research.py}可重算结果。
+
+\textbf{后续建议}\par
+优先补齐沪深300历史成分和明确复权的全样本数据，再检验行业中性、交易成本及不同持有期。当前结论应作为阴性研究结果保留，不建议继续调参直到样本外“变好看”。
+
+\vfill
+{\color{MemoRule}\hrule height 0.4pt}\medskip
+{\footnotesize 数据来源：项目本地CSV；计算与图表：\texttt{src/factor\_research.py}。报告结果仅供课程研究，不构成投资建议。}
+\end{document}

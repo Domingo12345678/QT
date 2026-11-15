@@ -36,6 +36,14 @@ python quant_system.py command "下次增加交易成本检查"
 
 本地安装后，Kimi Code 使用插件的托管副本；修改本目录后需要重新安装并 `/reload`。
 
+## 因子研究示例
+
+```bash
+python src/factor_research.py
+```
+
+该流程使用 `Data/CSI300_daily/raw/` 中现有的 34 只股票日线数据，在样本内比较三个候选因子，并用最后 12 个月做样本外检验。结果保存在 `output/factor_results.json` 和 `output/monthly_returns.csv`，最终中文报告为 `output/factor_research_report.pdf`。当前样本不代表完整沪深 300，研究结果不构成投资建议。
+
 ## 结构
 
 - `quant_system.py`：最小研究流程、风险检查和状态持久化。
